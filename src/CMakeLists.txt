@@ -3,11 +3,13 @@ cmake_minimum_required(VERSION 3.5)
 project(trabalho LANGUAGES C)
 
 find_package(Curses REQUIRED)
-include_directories(${CURSES_INCLUDE_DIR})
+include_directories(${CURSES_INCLUDE_DIR} ../include)
 
 add_executable(
     trabalho main.c
     improved-bubble-sort.c
+    merge-sort.c
+    util.c
 )
 
 target_link_libraries(trabalho ${CURSES_LIBRARIES})
