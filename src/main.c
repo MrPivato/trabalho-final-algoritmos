@@ -5,6 +5,7 @@
 #include "improved-bubble-sort.h"
 #include "quick-sort.h"
 #include "selection-sort.h"
+#include "merge-sort.h"
 
 int main()
 {
@@ -44,6 +45,17 @@ int main()
     iprint_arr(quick_list, size_quick, "Antes");
     quick_sort(quick_list, 0, size_quick-1);
     iprint_arr(quick_list, size_quick, "Depois");
+
+    printf("Merge Sort\n");
+    int size_merge = 10;
+    int merge_list[size_merge];
+    for (int i = 0; i < size_merge; i++)
+    {
+        merge_list[i] = generate_rand(50, 200);
+    }
+    iprint_arr(merge_list, size_merge, "Antes");
+    merge_sort(merge_list, size_merge);
+    iprint_arr(merge_list, size_merge, "Depois");
 
     return 0;
 }
