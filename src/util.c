@@ -40,3 +40,7 @@ void assert_sorted(int list[], size_t size) {
             exit(1);
         }
 }
+
+int generate_rand(int min, int max) {
+    return (rand() % (max - min + 1)) + min;
+};

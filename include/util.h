@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <time.h>
 
 /****************
  *  INDENTAÇÃO  *
@@ -20,5 +21,12 @@ void deindent();
 
 /* verifica se uma lista está ordenada */
 void assert_sorted(int list[], size_t size);
+
+/************************
+ *  GERAÇÃO DE NÚMEROS  *
+ ************************/
+
+/* Gera um número inteiro de min a max */
+int generate_rand(int min, int max);
 
 #endif // util_h_INCLUDED

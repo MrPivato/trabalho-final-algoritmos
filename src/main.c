@@ -1,32 +1,25 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <ncurses.h>
+#include "util.h"
+#include "improved-bubble-sort.h"
 
 int main()
-{	int ch;
+{
+    // criação da seed pros números randomicos
+    time_t t;
+    srand((unsigned)time(&t));
 
-    initscr();			/* Start curses mode 		*/
-    raw();				/* Line buffering disabled	*/
-    keypad(stdscr, TRUE);		/* We get F1, F2 etc..		*/
-    noecho();			/* Don't echo() while we do getch */
-
-    printw("Type any character to see it in bold\n");
-    ch = getch();			/* If raw() hadn't been called
-                     * we have to press enter before it
-                     * gets to the program 		*/
-    if(ch == KEY_F(1))		/* Without keypad enabled this will */
-        printw("F1 Key pressed");/*  not get to us either	*/
-    /* Without noecho() some ugly escape
-                     * charachters might have been printed
-                     * on screen			*/
-    else
-    {	printw("The pressed key is ");
-        attron(A_BOLD);
-        printw("%c", ch);
-        attroff(A_BOLD);
+    printf("Improved Bubble Sort\n");
+    int size = 7;
+    int bubble_list[size];
+    for (int i = 0; i < size; i++)
+    {
+        bubble_list[i] = generate_rand(12, 50);
     }
-    refresh();			/* Print it on to the real screen */
-    getch();			/* Wait for user input */
-    endwin();			/* End curses mode		  */
+    iprint_arr(bubble_list, size, "Antes");
+    improved_bubble_sort(bubble_list, size);
+    iprint_arr(bubble_list, size, "Depois");
 
     return 0;
 }
