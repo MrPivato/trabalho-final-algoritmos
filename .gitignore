@@ -54,3 +54,4 @@ dkms.conf
 CMakeLists.txt.user
 build-src*/*
 build
+.vscode/settings.json

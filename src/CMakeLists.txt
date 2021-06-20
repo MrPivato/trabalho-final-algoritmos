@@ -8,6 +8,7 @@ include_directories(${CURSES_INCLUDE_DIR} ../include)
 add_executable(
     trabalho main.c
     improved-bubble-sort.c
+    quick-sort.c
     merge-sort.c
     util.c
 )
