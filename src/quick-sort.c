@@ -1,6 +1,6 @@
 #include "quick-sort.h"
 
-void quick_sort(int list[], int first, int last)
+void quick_sort_impl(int list[], int first, int last)
 {
     int i, j, pivot, temp;
     if (first < last)
@@ -27,8 +27,13 @@ void quick_sort(int list[], int first, int last)
         temp = list[pivot];
         list[pivot] = list[j];
         list[j] = temp;
-        
-        quick_sort(list, first, j - 1);
-        quick_sort(list, j + 1, last);
+
+        quick_sort_impl(list, first, j - 1);
+        quick_sort_impl(list, j + 1, last);
     }
+}
+
+void quick_sort(int list[], size_t size)
+{
+    quick_sort_impl(list, 0, (int)size-1);
 }
