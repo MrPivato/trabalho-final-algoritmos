@@ -35,5 +35,5 @@ void quick_sort_impl(int list[], int first, int last)
 
 void quick_sort(int list[], size_t size)
 {
-    quick_sort_impl(list, 0, (int)size-1);
+    quick_sort_impl(list, 0, (int)size - 1);
 }

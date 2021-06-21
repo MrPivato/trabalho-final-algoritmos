@@ -7,7 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void run_sorter(char *name, void (*alg)(int[], size_t)){
+void run_sorter(char *name, void (*alg)(int[], size_t))
+{
     printf("%s\n", name);
 
     size_t size = 10;

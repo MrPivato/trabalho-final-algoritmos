@@ -6,7 +6,8 @@
 
 int indent_width = 0;
 
-void iprintf(const char *format, ...) {
+void iprintf(const char *format, ...)
+{
     va_list args;
     va_start(args, format);
 
@@ -17,30 +18,41 @@ void iprintf(const char *format, ...) {
     va_end(args);
 }
 
-void iprint_arr(int arr[], size_t size, char *msg) {
+void iprint_arr(int arr[], size_t size, char *msg)
+{
     iprintf("%s: {", msg);
-    for (int i = 0; i < size; i++) {
-        printf("%d", arr[i]);
+    for (int i = 0; i < size; i++)
+    {
+        printf("%2d", arr[i]);
         if (i < size - 1)
             printf(", ");
     }
     printf("}\n");
 }
 
-void indent() { indent_width++; }
+void indent()
+{
+    indent_width++;
+}
 
-void deindent() { indent_width--; }
+void deindent()
+{
+    indent_width--;
+}
 
-void assert_sorted(int list[], size_t size) {
+void assert_sorted(int list[], size_t size)
+{
     if (size < 2)
         return;
     for (int i = 1; i < size; i++)
-        if (list[i - 1] > list[i]) {
+        if (list[i - 1] > list[i])
+        {
             iprint_arr(list, size, "Failed to sort arrray");
             exit(1);
         }
 }
 
-int generate_rand(int min, int max) {
+int generate_rand(int min, int max)
+{
     return (rand() % (max - min + 1)) + min;
 };
