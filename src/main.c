@@ -1,11 +1,24 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <ncurses.h>
-#include "util.h"
 #include "improved-bubble-sort.h"
+#include "merge-sort.h"
 #include "quick-sort.h"
 #include "selection-sort.h"
-#include "merge-sort.h"
+#include "util.h"
+#include <ncurses.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void run_sorter(char *name, void (*alg)(int[], size_t)){
+    printf("%s\n", name);
+
+    size_t size = 10;
+    int list[size];
+    for (int i = 0; i < size; i++)
+        list[i] = generate_rand(0, 100);
+
+    iprint_arr(list, size, "Antes ");
+    alg(list, size);
+    iprint_arr(list, size, "Depois");
+}
 
 int main()
 {
@@ -13,49 +26,10 @@ int main()
     time_t t;
     srand(time(0));
 
-    printf("Improved Bubble Sort\n");
-    int size_bubble = 7;
-    int bubble_list[size_bubble];
-    for (int i = 0; i < size_bubble; i++)
-    {
-        bubble_list[i] = generate_rand(12, 50);
-    }
-    iprint_arr(bubble_list, size_bubble, "Antes");
-    improved_bubble_sort(bubble_list, size_bubble);
-    iprint_arr(bubble_list, size_bubble, "Depois");
-
-    printf("Selection Sort\n");
-    int size_selection = 10;
-    int selection_list[size_selection];
-    for (int i = 0; i < size_selection; i++)
-    {
-        selection_list[i] = generate_rand(50, 200);
-    }
-    iprint_arr(selection_list, size_selection, "Antes");
-    selection_sort(selection_list, size_selection);
-    iprint_arr(selection_list, size_selection, "Depois");
-
-    printf("Quick Sort\n");
-    int size_quick = 7;
-    int quick_list[size_quick];
-    for (int i = 0; i < size_quick; i++)
-    {
-        quick_list[i] = generate_rand(10, 70);
-    }
-    iprint_arr(quick_list, size_quick, "Antes");
-    quick_sort(quick_list, 0, size_quick-1);
-    iprint_arr(quick_list, size_quick, "Depois");
-
-    printf("Merge Sort\n");
-    int size_merge = 10;
-    int merge_list[size_merge];
-    for (int i = 0; i < size_merge; i++)
-    {
-        merge_list[i] = generate_rand(50, 200);
-    }
-    iprint_arr(merge_list, size_merge, "Antes");
-    merge_sort(merge_list, size_merge);
-    iprint_arr(merge_list, size_merge, "Depois");
+    run_sorter("Improved Bubble Sort", improved_bubble_sort);
+    run_sorter("Selection Sort", selection_sort);
+    run_sorter("Quick Sort", quick_sort);
+    run_sorter("Merge Sort", merge_sort);
 
     return 0;
 }
