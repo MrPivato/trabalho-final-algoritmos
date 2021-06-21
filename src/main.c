@@ -1,25 +1,12 @@
 #include "improved-bubble-sort.h"
 #include "merge-sort.h"
 #include "quick-sort.h"
+#include "run-sorter.h"
 #include "selection-sort.h"
 #include "util.h"
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-void run_sorter(char *name, void (*alg)(int[], size_t))
-{
-    printf("%s\n", name);
-
-    size_t size = 10;
-    int list[size];
-    for (int i = 0; i < size; i++)
-        list[i] = generate_rand(0, 100);
-
-    iprint_arr(list, size, "Antes ");
-    alg(list, size);
-    iprint_arr(list, size, "Depois");
-}
 
 int main()
 {

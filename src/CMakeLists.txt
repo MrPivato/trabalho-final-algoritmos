@@ -12,6 +12,7 @@ add_executable(
     merge-sort.c
     selection-sort.c
     util.c
+    run-sorter.c
 )
 
 target_link_libraries(trabalho ${CURSES_LIBRARIES})
