@@ -10,6 +10,7 @@ add_executable(
     improved-bubble-sort.c
     quick-sort.c
     merge-sort.c
+    selection-sort.c
     util.c
 )
 
