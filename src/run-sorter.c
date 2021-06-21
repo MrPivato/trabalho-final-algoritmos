@@ -9,15 +9,17 @@
 
 void run_sorter(char *nome_funcao, void (*funcao)(int[], size_t))
 {
-    size_t size = 40000;
+    size_t tamanho = 40000;
 
-    int lista[size];
-    for (int i = 0; i < size; i++)
-        lista[i] = generate_rand(0, size);
+    int lista[tamanho];
+    for (int i = 0; i < tamanho; i++)
+        lista[i] = generate_rand(0, tamanho * 10);
 
+    iprint_arr(lista, tamanho, "Antes ");
     time_t inicio = clock();
-    funcao(lista, size);
+    funcao(lista, tamanho);
     time_t fim = clock();
+    iprint_arr(lista, tamanho, "Depois");
 
     time_t tempo_decorrido_ms = (fim - inicio) * 1000 / CLOCKS_PER_SEC;
 
@@ -29,7 +31,7 @@ void run_sorter(char *nome_funcao, void (*funcao)(int[], size_t))
         tempo_decorrido_escala = 1000;
     }
 
-    printf("Tempo de Execução %s, com %ld itens: %li%s\n", nome_funcao, size,
+    printf("Tempo de Execução %s, com %ld itens: %li%s\n\n", nome_funcao, tamanho,
            tempo_decorrido_ms / tempo_decorrido_escala,
            tempo_decorrido_unidade);
 }

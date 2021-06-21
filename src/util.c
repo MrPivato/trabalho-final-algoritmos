@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "util.h"
 
@@ -20,12 +21,20 @@ void iprintf(const char *format, ...)
 
 void iprint_arr(int arr[], size_t size, char *msg)
 {
+
     iprintf("%s: {", msg);
     for (int i = 0; i < size; i++)
     {
-        printf("%2d", arr[i]);
-        if (i < size - 1)
-            printf(", ");
+        int limit = 5;
+
+        bool inrange = (i < limit || size - i < limit);
+        bool ellipsis = (size > 2 * limit && (i == size - i || i + 1 == size - i));
+        char *comma = (i < size - 1) ? ", " : "";
+
+        if (inrange)
+            printf("%6d%s", arr[i], comma);
+        else if (ellipsis)
+            printf("... ");
     }
     printf("}\n");
 }
