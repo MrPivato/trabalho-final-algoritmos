@@ -9,10 +9,10 @@
 
 void run_sorter(char *nome_funcao, void (*funcao)(int[], size_t))
 {
-    size_t tamanho = 40000;
+    size_t tamanho = 400000;
 
-    int lista[tamanho];
-    for (int i = 0; i < tamanho; i++)
+    int* lista = malloc(sizeof(int) * tamanho);
+    for (int i = 0; i <= tamanho; i++)
         lista[i] = generate_rand(0, tamanho * 10);
 
     iprint_arr(lista, tamanho, "Antes ");
@@ -20,6 +20,8 @@ void run_sorter(char *nome_funcao, void (*funcao)(int[], size_t))
     funcao(lista, tamanho);
     time_t fim = clock();
     iprint_arr(lista, tamanho, "Depois");
+
+    assert_sorted(lista, tamanho);
 
     time_t tempo_decorrido_ms = (fim - inicio) * 1000 / CLOCKS_PER_SEC;
 

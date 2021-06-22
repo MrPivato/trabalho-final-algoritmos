@@ -8,89 +8,126 @@
 
 #define DEBUG false
 
-void merge(int *inicio1, size_t tamanho1, int *inicio2, size_t tamanho2)
+#define ARROWCHAR '🡱'
+
+typedef enum State
 {
-    indent();
-    if (tamanho1 == 0 && tamanho2 == 0)
-        return;
+    MergeSort_Spliting,
+    MergeSort_Merging,
+    MergeSort_Waiting,
+    MergeSort_Done,
+} State;
 
-    if (DEBUG)
-    {
-        iprintf("Mesclando:\n");
-        iprint_arr(inicio1, tamanho1, "Lado esquerdo");
-        iprint_arr(inicio2, tamanho2, "Lado direito");
-    }
-    int *ponteiro1 = inicio1;
-    int *ponteiro2 = inicio2;
+typedef struct ListSection
+{
+    int *data;
+    int data_size;
 
-    int sorted_size = tamanho1 + tamanho2;
-    int *sorted = malloc(sizeof(int) * sorted_size);
-    size_t sortedi = 0;
+    int *tmp_sorted;
 
-    while (tamanho1 || tamanho2)
-    {
-        bool ambos = tamanho1 && tamanho2;
-        if (DEBUG)
-            iprintf("Comparando: %d, %d\n", *ponteiro1, *ponteiro2);
+    State state;
 
-        bool first = (ambos && *ponteiro1 < *ponteiro2) || (!ambos && tamanho1);
+    struct ListSection *left;
+    struct ListSection *right;
 
-        if (first)
-        {
-            if (DEBUG)
-                iprintf("Adicionando ao resultado: %d\n", *ponteiro1);
-            sorted[sortedi++] = *ponteiro1++;
-            tamanho1--;
-        }
-        else
-        {
-            if (DEBUG)
-                iprintf("Adicionando ao resultado: %d\n", *ponteiro2);
-            sorted[sortedi++] = *ponteiro2++;
-            tamanho2--;
-        }
-    }
+    struct ListSection *up;
+} ListSection;
 
-    for (int i = 0; i < sorted_size; i++)
-        inicio1[i] = sorted[i];
+ListSection *ListSection_new(ListSection *up, int *data, int data_size)
+{
+    ListSection *section = malloc(sizeof(ListSection));
+    section->data = data;
+    section->data_size = data_size;
+    section->tmp_sorted = NULL;
 
-    if (DEBUG)
-        iprint_arr(inicio1, sorted_size, "Result");
+    section->up = up;
 
-    deindent();
+    section->state = MergeSort_Spliting;
+    return section;
 }
 
-void merge_sort(int list[], size_t list_size)
+void MergeSort_split(ListSection *section)
 {
-    // Condição de parada da recursão.
-    if (list_size < 2)
-        return;
+    int *data = section->data;
+    int data_size = section->data_size;
 
-    indent();
-
-    if (DEBUG)
-        iprint_arr(list, list_size, "Ordenando");
-
-    // Separar a list em duas
-    int *l1 = list;
-    size_t l1s = list_size / 2;
-    int *l2 = &list[list_size / 2];
-    size_t l2s = list_size / 2 + (list_size % 2 == 1);
-
-    if (DEBUG)
+    if (section->data_size < 2)
     {
-        iprint_arr(l1, l1s, "Lado esquerdo");
-        iprint_arr(l2, l2s, "Lado direito ");
+        section->state = MergeSort_Done;
+        return;
     }
-    merge_sort(l1, l1s);
-    merge_sort(l2, l2s);
 
-    merge(l1, l1s, l2, l2s);
+    section->left = ListSection_new(section, data, data_size / 2);
+    int free_space = section->data_size - section->left->data_size;
+    section->right = ListSection_new(section, &data[data_size / 2], free_space);
 
-    if (DEBUG)
-        iprint_arr(list, list_size, "resultado merge-sort");
+    section->state = MergeSort_Waiting;
+}
 
-    deindent();
+void MergeSort_merge(ListSection *section)
+{
 
-    assert_sorted(list, list_size);
+    ListSection *left = section->left;
+    ListSection *right = section->right;
+
+    if (left->data_size == 0 && right->data_size == 0)
+    {
+        free(section->left);
+        free(section->right);
+        for (int i = 0; i < section->data_size; i++)
+            section->data[i] = section->tmp_sorted[i];
+        if (section->tmp_sorted != NULL)
+            free(section->tmp_sorted);
+        section->state = MergeSort_Done;
+        return;
+    }
+
+    if (section->tmp_sorted == NULL)
+        section->tmp_sorted = malloc(sizeof(int) * section->data_size);
+
+    ListSection *next_entry_src;
+    int dst_index = section->data_size - (left->data_size + right->data_size);
+
+    bool both = left->data_size && left->data_size;
+    if ((both && *left->data < *right->data) || right->data_size == 0)
+        next_entry_src = left;
+    else
+        next_entry_src = right;
+
+    section->tmp_sorted[dst_index] = next_entry_src->data[0];
+    next_entry_src->data++;
+    next_entry_src->data_size--;
+}
+
+void MergeSort_iter(ListSection *section)
+{
+    switch (section->state)
+    {
+    case MergeSort_Spliting:
+        MergeSort_split(section);
+        break;
+    case MergeSort_Merging:
+        MergeSort_merge(section);
+        break;
+    case MergeSort_Waiting:
+        if (section->right->state != MergeSort_Done)
+            MergeSort_iter(section->right);
+        else if (section->left->state != MergeSort_Done)
+            MergeSort_iter(section->left);
+        else
+            section->state = MergeSort_Merging;
+        break;
+    case MergeSort_Done:
+        break;
+    }
 };
+
+void merge_sort(int *list, int size)
+{
+    ListSection *root = ListSection_new(NULL, list, size);
+    while (root->state != MergeSort_Done)
+    {
+        MergeSort_iter(root);
+    }
+    free(root);
+}
