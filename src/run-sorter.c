@@ -17,7 +17,9 @@ void run_sorter(struct SortingAlgorithm algo)
 
     iprint_arr(lista, tamanho, "Antes ");
     time_t inicio = clock();
-    algo.func(lista, tamanho);
+    union SortingAlgorithmState state = algo.init(lista, tamanho);
+    while (!algo.iter(&state)) {
+    }
     time_t fim = clock();
     iprint_arr(lista, tamanho, "Depois");
 

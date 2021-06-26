@@ -1,24 +1,21 @@
 #ifndef algorithms_h_INCLUDED
 #define algorithms_h_INCLUDED
 
-#include "improved-bubble-sort.h"
-#include "merge-sort.h"
-#include "quick-sort.h"
-#include "selection-sort.h"
+#include "sort-state.h"
 
-struct SortingAlgorithm
-{
-    char *funcname;
-    void (*func)(int *, size_t);
-};
+// #include "improved-bubble-sort.h"
+#include "merge-sort.h"
+// #include "quick-sort.h"
+// #include "selection-sort.h"
+
 
 static struct SortingAlgorithm ALGORITHMS[] = {
-    {"Improved Bubble Sort", improved_bubble_sort},
-    {"Selection Sort", selection_sort},
-    {"Quick Sort", quick_sort},
-    {"Merge Sort", merge_sort},
+    // {"Improved Bubble Sort", improved_bubble_sort_init, NULL},
+    // {"Selection Sort", selection_sort, NULL},
+    // {"Quick Sort", quick_sort, NULL},
+    {"Merge Sort", merge_sort_init, merge_sort_iter},
 };
 
 static int ALGORITHMS_count = (sizeof(ALGORITHMS) / sizeof(ALGORITHMS[0]));
 
-#endif // algorithms_h_INCLUDED
+#endif

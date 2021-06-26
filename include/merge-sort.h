@@ -1,4 +1,10 @@
+#ifndef merge_sort_h_INCLUDED
+#define merge_sort_h_INCLUDED
+
+#include <stdbool.h>
 #include <stdlib.h>
+
+#include "merge-sort-state.h"
 
 /*
  * Merge sort
@@ -7,4 +13,8 @@
  * Enquanto os segmentos tiverem elementos
  * Adiciona o menor elemento primeiro elemento
  */
-void merge_sort(int list[], size_t list_size);
+union SortingAlgorithmState merge_sort_init(int *list, size_t list_size);
+
+bool merge_sort_iter(union SortingAlgorithmState *state);
+
+#endif // merge_sort_h_INCLUDED

@@ -4,38 +4,18 @@
 
 #include <stdarg.h>
 
-#include "util.h"
+#include "merge-sort.h"
+#include "sort-state.h"
 
-#define DEBUG false
+#include "util.h"
 
 #define ARROWCHAR '🡱'
 
-typedef enum State
+struct MergeSortListSection *ListSection_new(struct MergeSortListSection *up,
+                                             int *data, int data_size)
 {
-    MergeSort_Spliting,
-    MergeSort_Merging,
-    MergeSort_Waiting,
-    MergeSort_Done,
-} State;
-
-typedef struct ListSection
-{
-    int *data;
-    int data_size;
-
-    int *tmp_sorted;
-
-    State state;
-
-    struct ListSection *left;
-    struct ListSection *right;
-
-    struct ListSection *up;
-} ListSection;
-
-ListSection *ListSection_new(ListSection *up, int *data, int data_size)
-{
-    ListSection *section = malloc(sizeof(ListSection));
+    struct MergeSortListSection *section =
+        malloc(sizeof(struct MergeSortListSection));
     section->data = data;
     section->data_size = data_size;
     section->tmp_sorted = NULL;
@@ -46,7 +26,7 @@ ListSection *ListSection_new(ListSection *up, int *data, int data_size)
     return section;
 }
 
-void MergeSort_split(ListSection *section)
+void MergeSort_split(struct MergeSortListSection *section)
 {
     int *data = section->data;
     int data_size = section->data_size;
@@ -64,11 +44,11 @@ void MergeSort_split(ListSection *section)
     section->state = MergeSort_Waiting;
 }
 
-void MergeSort_merge(ListSection *section)
+void MergeSort_merge(struct MergeSortListSection *section)
 {
 
-    ListSection *left = section->left;
-    ListSection *right = section->right;
+    struct MergeSortListSection *left = section->left;
+    struct MergeSortListSection *right = section->right;
 
     if (left->data_size == 0 && right->data_size == 0)
     {
@@ -85,7 +65,7 @@ void MergeSort_merge(ListSection *section)
     if (section->tmp_sorted == NULL)
         section->tmp_sorted = malloc(sizeof(int) * section->data_size);
 
-    ListSection *next_entry_src;
+    struct MergeSortListSection *next_entry_src;
     int dst_index = section->data_size - (left->data_size + right->data_size);
 
     bool both = left->data_size && left->data_size;
@@ -99,8 +79,11 @@ void MergeSort_merge(ListSection *section)
     next_entry_src->data_size--;
 }
 
-void MergeSort_iter(ListSection *section)
+bool merge_sort_iter(union SortingAlgorithmState *state)
 {
+    struct MergeSortListSection *section = state->merge_sort_state;
+
+    union SortingAlgorithmState sub_state;
     switch (section->state)
     {
     case MergeSort_Spliting:
@@ -111,23 +94,30 @@ void MergeSort_iter(ListSection *section)
         break;
     case MergeSort_Waiting:
         if (section->right->state != MergeSort_Done)
-            MergeSort_iter(section->right);
+        {
+            sub_state.merge_sort_state = section->right;
+            merge_sort_iter(&sub_state);
+        }
         else if (section->left->state != MergeSort_Done)
-            MergeSort_iter(section->left);
+        {
+            sub_state.merge_sort_state = section->left;
+            merge_sort_iter(&sub_state);
+        }
         else
             section->state = MergeSort_Merging;
         break;
     case MergeSort_Done:
+        return true;
         break;
     }
+
+    return false;
 };
 
-void merge_sort(int *list, int size)
+union SortingAlgorithmState merge_sort_init(int *list, size_t size)
 {
-    ListSection *root = ListSection_new(NULL, list, size);
-    while (root->state != MergeSort_Done)
-    {
-        MergeSort_iter(root);
-    }
-    free(root);
+    union SortingAlgorithmState state = {.merge_sort_state =
+                                             ListSection_new(NULL, list, size)};
+
+    return state;
 }
