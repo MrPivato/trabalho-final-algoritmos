@@ -13,6 +13,7 @@ add_executable(
     selection-sort.c
     util.c
     run-sorter.c
+    window.c
 )
 
 target_link_libraries(trabalho ${CURSES_LIBRARIES})

@@ -1,6 +1,8 @@
-#include "run-sorter.h"
 #include "algorithms.h"
+#include "run-sorter.h"
 #include "util.h"
+#include "window.h"
+
 #include <ncurses.h>
 
 int main()
@@ -9,12 +11,11 @@ int main()
     time_t t;
     srand(time(0));
 
-    for (int i = 0; i < ALGORITHMS_count; i++)
-    {
-        struct SortingAlgorithm algo = ALGORITHMS[i];
+    struct MenuState menu = Menu_start();
 
-        run_sorter(algo);
-    }
+    Menu_menu(&menu);
+
+    Menu_end();
 
     return 0;
 }
