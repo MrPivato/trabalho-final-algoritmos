@@ -9,7 +9,7 @@
 
 void run_sorter(struct SortingAlgorithm algo)
 {
-    size_t tamanho = 400000;
+    size_t tamanho = 400;
 
     int *lista = malloc(sizeof(int) * tamanho);
     for (int i = 0; i <= tamanho; i++)
