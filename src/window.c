@@ -1,6 +1,6 @@
-
 #include "window.h"
 #include "algorithms.h"
+#include "run-sorter.h"
 #include <ncurses.h>
 
 enum Menu_Colors
@@ -21,10 +21,11 @@ struct MenuState Menu_start()
     init_pair(DEFAULT, COLOR_WHITE, COLOR_BLACK);
     init_pair(CURSOR, COLOR_BLACK, COLOR_WHITE);
 
-    // timeout(300);
+    timeout(500);
 
     struct MenuState ret;
     ret.selected = 0;
+    ret.window = stdscr;
     return ret;
 }
 
@@ -35,52 +36,47 @@ void Menu_end()
 
 void Menu_draw(struct MenuState *menu)
 {
-    clear();
+    wclear(menu->window);
 
     int x, y;
-    int i = 0;
-    getyx(stdscr, x, y);
+    getyx(menu->window, x, y);
 
-    mvprintw(0, 0, "Escolha um algoritmo: %d", menu->selected);
-    for (i = 0; i < ALGORITHMS_count; i++)
+    mvwprintw(menu->window, 0, 0, "Escolha um algoritmo: %d", menu->selected);
+    for (int i = 0; i < ALGORITHMS_count; i++)
     {
         if (i == menu->selected)
-            attron(COLOR_PAIR(CURSOR));
-        mvprintw(i + 2, 0, "%s", ALGORITHMS[i].funcname);
-        attroff(COLOR_PAIR(CURSOR));
+            wattron(menu->window, COLOR_PAIR(CURSOR));
+        mvwprintw(menu->window, i + 2, 0, "%s", ALGORITHMS[i].funcname);
+        wattroff(menu->window, COLOR_PAIR(CURSOR));
     }
-
-    // move(i + 1, 0);
 }
 
 enum MenuAction Menu_handle_input()
 {
     int ch = getch();
 
-    enum MenuAction ret = MenuAction_none;
     switch (ch)
     {
     case KEY_UP:
-        ret = MenuAction_prev;
-        break;
+        return MenuAction_prev;
     case KEY_DOWN:
-        ret = MenuAction_next;
-        break;
-    case KEY_ENTER:
-        break;
+        return MenuAction_next;
+    case '\n':
+        return MenuAction_run;
     case 'q':
-        ret = MenuAction_quit;
-        break;
+        return MenuAction_quit;
     default:
         break;
     }
 
-    return ret;
+    return MenuAction_none;
 }
 
 void Menu_menu(struct MenuState *menu)
 {
     bool loop = true;
+    struct SortingAlgorithm alg;
+
     while (loop)
     {
         Menu_draw(menu);
@@ -97,6 +93,10 @@ void Menu_menu(struct MenuState *menu)
         case MenuAction_prev:
             if (menu->selected > 0)
                 menu->selected -= 1;
+            break;
+        case MenuAction_run:
+            alg = ALGORITHMS[menu->selected];
+            run_sorter(alg);
             break;
         case MenuAction_none:
             break;

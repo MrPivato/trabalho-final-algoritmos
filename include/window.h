@@ -9,11 +9,13 @@ enum MenuAction
     MenuAction_quit,
     MenuAction_next,
     MenuAction_prev,
+    MenuAction_run,
 };
 
 struct MenuState
 {
     int selected;
+    WINDOW *window;
 };
 
 struct MenuState Menu_start();
