@@ -11,9 +11,9 @@ int main()
 
     for (int i = 0; i < ALGORITHMS_count; i++)
     {
-        struct SortingAlgorithm alg = ALGORITHMS[i];
+        struct SortingAlgorithm algo = ALGORITHMS[i];
 
-        run_sorter(alg.funcname, alg.func);
+        run_sorter(algo);
     }
 
     return 0;
