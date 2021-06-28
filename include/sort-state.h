@@ -6,12 +6,13 @@
 
 #include "improved-bubble-sort-state.h"
 #include "merge-sort-state.h"
-// #include "quick-sort.h"
+#include "quick-sort-state.h"
 // #include "selection-sort.h"
 
 typedef union SortingAlgorithmState {
     struct MergeSortListSection *merge_sort_state;
     struct ImprovedBubbleSortState improved_bubble_sort_state;
+    struct QuickSortState* quick_sort_state;
     // struct ImprovedBubbleSortState improved_bubble_sort_state;
 } SortingAlgorithmState;
 
