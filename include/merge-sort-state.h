@@ -5,6 +5,7 @@ struct MergeSortListSection
 {
     int *data;
     int data_size;
+    int data_capacity;
 
     int *tmp_sorted;
 

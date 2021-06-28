@@ -9,19 +9,41 @@
 
 void run_sorter(struct SortingAlgorithm algo)
 {
-    size_t tamanho = 400;
+    // wclear(stdscr);
+
+    int h, w;
+    getmaxyx(stdscr, h, w);
+    WINDOW *win = newwin(h - 6, w - 12, 3, 6);
+
+    size_t tamanho = 5;
 
     int *lista = malloc(sizeof(int) * tamanho);
     for (int i = 0; i <= tamanho; i++)
         lista[i] = generate_rand(0, tamanho * 10);
 
-    iprint_arr(lista, tamanho, "Antes ");
+    // iprint_arr(lista, tamanho, "Antes ");
     time_t inicio = clock();
     union SortingAlgorithmState state = algo.init(lista, tamanho);
-    while (!algo.iter(&state)) {
+    while (!algo.iter(&state))
+    {
+        wclear(win);
+        box(win, 0, 0);
+
+        mvwprintw(win, 0, 2, "|%s|", algo.funcname);
+        mvwprintw(win, 1, 1, "Here: ");
+
+        if (algo.draw == NULL)
+            default_draw(win, lista, tamanho, &state);
+        else
+            algo.draw(win, lista, tamanho, &state);
+
+        wrefresh(win);
+        timeout(100);
+        getch();
     }
     time_t fim = clock();
-    iprint_arr(lista, tamanho, "Depois");
+
+    // iprint_arr(lista, tamanho, "Depois");
 
     assert_sorted(lista, tamanho);
 
@@ -35,7 +57,12 @@ void run_sorter(struct SortingAlgorithm algo)
         tempo_decorrido_escala = 1000;
     }
 
-    printf("Tempo de Execução %s, com %ld itens: %li%s\n\n", algo.funcname,
-           tamanho, tempo_decorrido_ms / tempo_decorrido_escala,
-           tempo_decorrido_unidade);
+    int winh, winw;
+    getmaxyx(win, winh, winw);
+    mvwprintw(win, winh - 2, 1, "%s levou %li%s com %ld itens", algo.funcname,
+              tempo_decorrido_ms / tempo_decorrido_escala,
+              tempo_decorrido_unidade, tamanho);
+    wrefresh(win);
+    timeout(-1);
+    getch();
 }

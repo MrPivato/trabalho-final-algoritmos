@@ -14,6 +14,7 @@ add_executable(
     util.c
     run-sorter.c
     window.c
+    default_draw.c
 )
 
 target_link_libraries(trabalho ${CURSES_LIBRARIES})

@@ -1,13 +1,12 @@
 #ifndef quick_sort_state_h_INCLUDED
 #define quick_sort_state_h_INCLUDED
 
-// #include <stdbool.h>
-// #include <stddef.h>
+#include <stddef.h>
 
 struct QuickSortState
 {
     int *list;
-    // size_t list_size;
+    size_t list_size;
     int pivot;
     int i, j;
     int first, last;
