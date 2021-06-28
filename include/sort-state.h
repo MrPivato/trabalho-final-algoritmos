@@ -7,13 +7,13 @@
 #include "improved-bubble-sort-state.h"
 #include "merge-sort-state.h"
 #include "quick-sort-state.h"
-// #include "selection-sort.h"
+#include "selection-sort-state.h"
 
 typedef union SortingAlgorithmState {
     struct MergeSortListSection *merge_sort_state;
     struct ImprovedBubbleSortState improved_bubble_sort_state;
     struct QuickSortState* quick_sort_state;
-    // struct ImprovedBubbleSortState improved_bubble_sort_state;
+    struct SelectionSortState selection_sort_state;
 } SortingAlgorithmState;
 
 struct SortingAlgorithm
