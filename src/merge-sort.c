@@ -58,6 +58,8 @@ void MergeSort_merge(struct MergeSortListSection *section)
     {
         free(section->left);
         free(section->right);
+        section->left = NULL;
+        section->right = NULL;
         for (int i = 0; i < section->data_size; i++)
             section->data[i] = section->tmp_sorted[i];
         if (section->tmp_sorted != NULL)
@@ -130,15 +132,19 @@ void merge_sort_draw_segment(WINDOW *win, int y, int x, int maxn,
                              struct MergeSortListSection *section)
 {
 
-    int mx_idx;
-
-    wmove(win, y, x);
-    mvwprintw(win, y, x - 1, "|");
-    for (int i = 0; i < section->data_size; i++)
+    if (section->tmp_sorted != NULL && section->left != NULL)
     {
-        wprintw(win, "%*d ", maxn, section->data[i]);
-        if (i == section->data_size - 1)
-            mvwprintw(win, y, x - 1, "|");
+        mvwprintw(win, y, x - 1, "|");
+        wmove(win, y, x);
+        int dst_index = section->data_size -
+                        (section->left->data_size + section->right->data_size);
+        for (int i = 0; i < dst_index; i++)
+        {
+            char c = ' ';
+            if (i == dst_index - 1)
+                c = '|';
+            wprintw(win, "%*d%c", maxn, section->tmp_sorted[i], c);
+        }
     }
     if (section->left != NULL && section->left->data_size)
     {
@@ -146,68 +152,24 @@ void merge_sort_draw_segment(WINDOW *win, int y, int x, int maxn,
         merge_sort_draw_segment(win, y, x, maxn, section->left);
         if (section->right != NULL && section->right->data_size)
         {
-            x += (maxn + 1) * section->left->data_size;
+            x += (maxn + 1) * section->left->data_capacity;
             merge_sort_draw_segment(win, y, x, maxn, section->right);
-            x -= (maxn + 1) * section->left->data_size;
+            x -= (maxn + 1) * section->left->data_capacity;
         }
         y--;
     }
-
-    // switch (section->state)
-    // {
-    // case MergeSort_Spliting:
-
-    // case MergeSort_Merging:
-    //     mx_idx = section->data_size -
-    //              (section->left->data_size + section->right->data_size) - 1;
-
-    //     wmove(win, y, x);
-    //     for (int i = 0; i < mx_idx; i++)
-    //         wprintw(win, "%*d ", maxn, section->tmp_sorted[i]);
-
-    //     if (section->right->state == MergeSort_Done)
-    //     {
-    //         y++;
-    //         merge_sort_draw_segment(win, y, x, maxn, section->left);
-    //         y--;
-    //         x += maxn * section->left->data_size;
-    //         merge_sort_draw_segment(win, y, x, maxn, section->right);
-    //         x -= maxn * section->left->data_size;
-    //     }
-    //     else
-    //     {
-    //         y++;
-    //         x += maxn * section->left->data_size;
-    //         merge_sort_draw_segment(win, y, x, maxn, section->right);
-    //         x -= maxn * section->left->data_size;
-    //         y--;
-    //     }
-    //     break;
-    // case MergeSort_Waiting:
-    //     if (section->right->state == MergeSort_Done)
-    //     {
-    //         wmove(win, y, x);
-    //         for (int i = 0; i < section->left->data_size; i++)
-    //             wprintw(win, "%*d ", maxn, section->left->data[i]);
-    //         y++;
-    //         x += maxn * section->left->data_size;
-    //         merge_sort_draw_segment(win, y, x, maxn, section->right);
-    //         x -= maxn * section->left->data_size;
-    //         y--;
-    //     }
-    //     else
-    //     {
-    //         y++;
-    //         merge_sort_draw_segment(win, y, x, maxn, section->left);
-    //         x += maxn * section->left->data_size;
-    //         merge_sort_draw_segment(win, y, x, maxn, section->right);
-    //         x -= maxn * section->left->data_size;
-    //         y--;
-    //     }
-    //     break;
-    // case MergeSort_Done:
-    //     break;
-    // }
+    else if (section->state != MergeSort_Merging)
+    {
+        mvwprintw(win, y, x - 1, "|");
+        wmove(win, y, x);
+        for (int i = 0; i < section->data_size; i++)
+        {
+            char c = ' ';
+            if (i == section->data_size - 1)
+                c = '|';
+            wprintw(win, "%*d%c", maxn, section->data[i], c);
+        }
+    }
 }
 
 void merge_sort_draw(WINDOW *win, int *list, size_t list_size,

@@ -11,7 +11,7 @@
 static struct SortingAlgorithm ALGORITHMS[] = {
     {"Improved Bubble Sort", improved_bubble_sort_init, improved_bubble_sort_iter, NULL},
     {"Selection Sort", selection_sort_init, selection_sort_iter, NULL},
-    {"Merge Sort", merge_sort_init, merge_sort_iter, NULL},
+    {"Merge Sort", merge_sort_init, merge_sort_iter, merge_sort_draw},
     {"Quick Sort", quick_sort_init, quick_sort_iter, NULL},
 };
 
